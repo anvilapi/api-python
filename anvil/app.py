@@ -65,7 +65,10 @@ class Anvil:
 		for type, idlist in dependencies.items():
 			records = DBO.get_records(table=type, filters={ 'Id': idlist })
 
-			tree[type] = records
+			if type not in tree:
+				tree[type] = []
+
+			tree[type] += records
 
 			for record in records:
 				self.find_dependencies(record, tree)
