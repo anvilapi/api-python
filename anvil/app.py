@@ -8,7 +8,8 @@ class Anvil:
 		'AssignmentGrade',
 		'Assignment',
 		'Course',
-		'Image'
+		'Image',
+		'Teacher'
 	]
 
 
@@ -46,12 +47,10 @@ class Anvil:
 				if not type in Anvil.structure:
 					continue
 
+				if type in ['Teacher']: type = 'User'
+
 				if value is not None:
 					record[key[:-2]] = { 'type': type, 'id': value }
-
-
-					if type in tree and has_record(tree[type], value):
-						continue
 
 					if not type in self.__dependencies:
 						self.__dependencies[type] = set()
