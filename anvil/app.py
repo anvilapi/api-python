@@ -9,7 +9,8 @@ class Anvil:
 		'Assignment',
 		'Course',
 		'Image',
-		'Teacher'
+		'Teacher',
+		'Gradingscale'
 	]
 
 
