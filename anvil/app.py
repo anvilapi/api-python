@@ -14,15 +14,15 @@ class Anvil:
 		'Gradingscale'
 	]
 
-
 	def __init__(self):
 		self.__dependencies = {}
+		self.dbo = DBO()
 
 	def connect_to_db(self, **kwargs):
-		DBO.connect(**kwargs)
+		self.dbo.connect(**kwargs)
 
 	def get(self, table, filters, tree={}):
-		records = DBO.get_records(table=table, filters=filters)
+		records = self.dbo.get_records(table=table, filters=filters)
 
 		tree[table] = records
 
@@ -64,7 +64,7 @@ class Anvil:
 		self.__dependencies = {}
 
 		for type, idlist in dependencies.items():
-			records = DBO.get_records(table=type, filters={ 'Id': idlist })
+			records = self.dbo.get_records(table=type, filters={ 'Id': idlist })
 
 			if type not in tree:
 				tree[type] = []
