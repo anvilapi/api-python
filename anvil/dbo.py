@@ -4,7 +4,7 @@ class DBO:
     def connect(self, **kwargs):
         self._connection = MySQLdb.connect(**kwargs)
 
-    def get_records(self, table=None, filters=None):
+    def get_records(self, table, filters=None):
         sql = 'SELECT * FROM `{0}`'.format(table)
 
         if filters is not None:
@@ -29,3 +29,14 @@ class DBO:
                 records.append(record)
 
         return records
+
+    def update_record(self, table, record):
+        updates = []
+        for key, value in record.items():
+            updates.append('`{0}`="{1}"'.format(key, value))
+        update = ','.join(updates)
+        sql = 'UPDATE `{0}` SET {1} WHERE id={2}'.format(table, update, record['id'])
+
+        with self._connection as cursor:
+            cursor.execute(self._connection.escape_string(sql))
+        return {}

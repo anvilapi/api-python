@@ -33,6 +33,10 @@ class Anvil:
 
 		return tree
 
+	def update(self, table, record):
+		result = self.dbo.update_record(table=table, record=record)
+		return result
+
 	def find_dependencies(self, record, tree):
 		def has_record(records, id):
 			for record in records:
