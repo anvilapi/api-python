@@ -33,10 +33,12 @@ class DBO:
     def update_record(self, table, record):
         updates = []
         for key, value in record.items():
+            if isinstance(value, basestring):
+                value = self._connection.escape_string(value)
             updates.append('`{0}`="{1}"'.format(key, value))
         update = ','.join(updates)
         sql = 'UPDATE `{0}` SET {1} WHERE id={2}'.format(table, update, record['id'])
 
         with self._connection as cursor:
-            cursor.execute(self._connection.escape_string(sql))
+            cursor.execute(sql)
         return {}
