@@ -5,6 +5,7 @@ class Anvil:
 	structure = [
 		'Attendance',
 		'AttendanceType',
+		'AssignmentCategory',
 		'AssignmentGrade',
 		'Assignment',
 		'Course',
@@ -24,7 +25,7 @@ class Anvil:
 	def get(self, table, filters, tree={}):
 		records = self.dbo.get_records(table=table, filters=filters)
 
-		tree[table] = records
+		tree[table] = {record['Id']: record for record in records}
 
 		for record in records:
 			self.find_dependencies(record, tree)
@@ -38,14 +39,6 @@ class Anvil:
 		return result
 
 	def find_dependencies(self, record, tree):
-		def has_record(records, id):
-			for record in records:
-				if record['Id'] == id:
-					return True
-
-			return False
-
-
 		for key, value in record.items():
 			if key.endswith('Id'):
 				type = key[:-2]
@@ -56,6 +49,7 @@ class Anvil:
 				if type in ['Teacher']: type = 'User'
 
 				if value is not None:
+					del record[key]
 					record[key[:-2]] = { 'type': type, 'id': value }
 
 					if not type in self.__dependencies:
@@ -71,11 +65,11 @@ class Anvil:
 			records = self.dbo.get_records(table=type, filters={ 'Id': idlist })
 
 			if type not in tree:
-				tree[type] = []
-
-			tree[type] += records
+				tree[type] = {}
 
 			for record in records:
+				id = record['Id']
+				tree[type][id] = record
 				self.find_dependencies(record, tree)
 
 			self.resolve_dependencies(tree)
